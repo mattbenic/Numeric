@@ -28,7 +28,7 @@ using Numeric;
 namespace UnitTests
 {
     [TestClass]
-    public class Int64Tests
+    public class Int64NumericTests
     {
         [TestMethod]
         public void TestAddMethod()
@@ -162,8 +162,8 @@ namespace UnitTests
         public void TestEqualsMethod()
         {
             var rand = new Random();
-            long input1 = (long)rand.Next();
-            long input2 = (long)rand.Next();
+            long input1 = rand.Next();
+            long input2 = rand.Next();
             bool expected = input1 == input2;
 
             bool actual = ((Numeric<long>)input1).Equals(input2);
@@ -331,10 +331,92 @@ namespace UnitTests
         public void TestGetHashCodeMethodIsConsistent()
         {
             var rand = new Random();
-            long input = (long)rand.Next();
+            long input = rand.Next();
             int expected = ((Numeric<long>)input).GetHashCode();
 
             int actual = ((Numeric<long>)input).GetHashCode();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestToStringMethod()
+        {
+            var rand = new Random();
+            long input = rand.Next();
+            string expected = input.ToString();
+
+            string actual = ((Numeric<long>)input).ToString();
+
+            Assert.AreEqual(expected, actual);
+        }
+    }
+
+    [TestClass]
+    public class Int64MathTests
+    {
+        [TestMethod]
+        public void TestAbsMethodPositive()
+        {
+            var rand = new Random();
+            long input = (long)rand.Next(0, int.MaxValue);
+            long expected = input;
+
+            long actual = Math<long>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestAbsMethodNegative()
+        {
+            var rand = new Random();
+            long input = (long)rand.Next(int.MinValue, -1);
+            long expected = (long)-input;
+
+            long actual = Math<long>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodLessThan()
+        {
+            var rand = new Random();
+            long min = (long)rand.Next();
+            long max = (long)rand.Next((int) min, int.MaxValue);
+            long input = (long)rand.Next(int.MinValue, (int) min);
+            long expected = min;
+
+            long actual = Math<long>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodMoreThan()
+        {
+            var rand = new Random();
+            long min = (long)rand.Next();
+            long max = (long)rand.Next((int) min, int.MaxValue);
+            long input = (long)rand.Next((int) max, int.MaxValue);
+            long expected = max;
+
+            long actual = Math<long>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodInside()
+        {
+            var rand = new Random();
+            long min = (long)rand.Next();
+            long max = (long)rand.Next((int) min, int.MaxValue);
+            long input = (long)rand.Next((int) min, (int) max);
+            long expected = input;
+
+            long actual = Math<long>.Clamp(input, min, max);
 
             Assert.AreEqual(expected, actual);
         }

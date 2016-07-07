@@ -28,7 +28,7 @@ using Numeric;
 namespace UnitTests
 {
     [TestClass]
-    public class UInt64Tests
+    public class UInt64NumericTests
     {
         [TestMethod]
         public void TestAddMethod()
@@ -331,6 +331,76 @@ namespace UnitTests
             int expected = ((Numeric<ulong>)input).GetHashCode();
 
             int actual = ((Numeric<ulong>)input).GetHashCode();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestToStringMethod()
+        {
+            var rand = new Random();
+            ulong input = (ulong)rand.Next((int) ulong.MinValue, int.MaxValue);
+            string expected = input.ToString();
+
+            string actual = ((Numeric<ulong>)input).ToString();
+
+            Assert.AreEqual(expected, actual);
+        }
+    }
+
+    [TestClass]
+    public class UInt64MathTests
+    {
+        [TestMethod]
+        public void TestAbsMethodPositive()
+        {
+            var rand = new Random();
+            ulong input = (ulong)rand.Next(0, int.MaxValue);
+            ulong expected = input;
+
+            ulong actual = Math<ulong>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodLessThan()
+        {
+            var rand = new Random();
+            ulong min = (ulong)rand.Next((int)ulong.MinValue, int.MaxValue);
+            ulong max = (ulong)rand.Next((int)min, int.MaxValue);
+            ulong input = (ulong)rand.Next((int)ulong.MinValue, (int)min);
+            ulong expected = min;
+
+            ulong actual = Math<ulong>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodMoreThan()
+        {
+            var rand = new Random();
+            ulong min = (ulong)rand.Next((int)ulong.MinValue, int.MaxValue);
+            ulong max = (ulong)rand.Next((int)min, int.MaxValue);
+            ulong input = (ulong)rand.Next((int)max, int.MaxValue);
+            ulong expected = max;
+
+            ulong actual = Math<ulong>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodInside()
+        {
+            var rand = new Random();
+            ulong min = (ulong)rand.Next();
+            ulong max = (ulong)rand.Next((int)min, int.MaxValue);
+            ulong input = (ulong)rand.Next((int)min, (int)max);
+            ulong expected = input;
+
+            ulong actual = Math<ulong>.Clamp(input, min, max);
 
             Assert.AreEqual(expected, actual);
         }

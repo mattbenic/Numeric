@@ -29,7 +29,7 @@ using Numeric;
 namespace UnitTests
 {
     [TestClass]
-    public class SingleTests
+    public class SingleNumericTests
     {
         [TestMethod]
         public void TestAddMethod()
@@ -163,8 +163,8 @@ namespace UnitTests
         public void TestEqualsMethod()
         {
             var rand = new Random();
-            float input1 = (float)rand.Next();
-            float input2 = (float)rand.Next();
+            float input1 = rand.Next();
+            float input2 = rand.Next();
             bool expected = input1 == input2;
 
             bool actual = ((Numeric<float>)input1).Equals(input2);
@@ -332,7 +332,7 @@ namespace UnitTests
         public void TestGetHashCodeMethodIsConsistent()
         {
             var rand = new Random();
-            float input = (float)rand.Next();
+            float input = rand.Next();
             int expected = ((Numeric<float>)input).GetHashCode();
 
             int actual = ((Numeric<float>)input).GetHashCode();
@@ -348,7 +348,7 @@ namespace UnitTests
             float inputMax = 10.0f;
             float outputMin = 0.0f;
             float outputMax = 100.0f;
-            float input = (float)rand.Next((int)inputMin, (int)inputMax);
+            float input = rand.Next((int)inputMin, (int)inputMax);
             float expected = LerpMinMaxFloat(input, inputMin, inputMax, outputMin, outputMax);
 
             var actual = LerpMinMaxNumeric<float>(input, inputMin, inputMax, outputMin, outputMax);
@@ -382,6 +382,88 @@ namespace UnitTests
                 return outputMax;
             }
             return outputMin + ((input - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin);
+        }
+
+        [TestMethod]
+        public void TestToStringMethod()
+        {
+            var rand = new Random();
+            float input = rand.Next();
+            string expected = input.ToString();
+
+            string actual = ((Numeric<float>)input).ToString();
+
+            Assert.AreEqual(expected, actual);
+        }
+    }
+
+    [TestClass]
+    public class SingleMathTests
+    {
+        [TestMethod]
+        public void TestAbsMethodPositive()
+        {
+            var rand = new Random();
+            float input = rand.Next(0, int.MaxValue);
+            float expected = input;
+
+            float actual = Math<float>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestAbsMethodNegative()
+        {
+            var rand = new Random();
+            float input = rand.Next(int.MinValue, -1);
+            float expected = -input;
+
+            float actual = Math<float>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodLessThan()
+        {
+            var rand = new Random();
+            float min = rand.Next();
+            float max = rand.Next((int)min, int.MaxValue);
+            float input = rand.Next(int.MinValue, (int)min);
+            float expected = min;
+
+            float actual = Math<float>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodMoreThan()
+        {
+            var rand = new Random();
+            float min = rand.Next();
+            float max = rand.Next((int)min, int.MaxValue);
+            float input = rand.Next((int)max, int.MaxValue);
+            float expected = max;
+
+            float actual = Math<float>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodInside()
+        {
+            var rand = new Random();
+            float min = rand.Next();
+            float max = rand.Next((int)min, int.MaxValue);
+            float input = rand.Next((int)min, (int)max);
+            float expected = input;
+
+            float actual = Math<float>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
         }
     }
 }

@@ -21,7 +21,6 @@ SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Numeric
@@ -55,6 +54,7 @@ namespace Numeric
     /// <typeparam name="T">The underlying numeric type to perform calculations with.</typeparam>
     public struct Numeric<T>
     {
+        public static readonly Func<T> Zero;
         public static readonly Func<T, T, T> Add;
         public static readonly Func<T, T, T> Subtract;
         public static readonly Func<T, T, T> Multiply;
@@ -71,6 +71,7 @@ namespace Numeric
 
         static Numeric()
         {
+            Zero = OperatorProvider.Zero<T>() as Func<T>;
             Add = OperatorProvider.Add<T>() as Func<T, T, T>;
             Subtract = OperatorProvider.Subtract<T>() as Func<T, T, T>;
             Multiply = OperatorProvider.Multiply<T>() as Func<T, T, T>;
@@ -182,6 +183,15 @@ namespace Numeric
         {
             return value.GetHashCode();
         }
+
+        /// <summary>
+        /// Returns a string that represents the current object
+        /// </summary>
+        /// <returns>A string that represents the current object</returns>
+        public override string ToString()
+        {
+            return value.ToString();
+        }
         #endregion
     }
 
@@ -191,6 +201,38 @@ namespace Numeric
     /// </summary>
     internal class OperatorProvider
     {
+        /// <summary>
+        /// Returns an Method that provides the zero value for T cast as an object
+        /// </summary>
+        /// <typeparam name="T">Type to get the method for</typeparam>
+        /// <returns>A method that returns a zero value for the Type T if possible, or its default value otherwise</returns>
+        public static object Zero<T>()
+        {
+            switch (typeof(T).Name)
+            {
+                case "UInt16":
+                    return (Func<ushort>)(() => 0);
+                case "Int16":
+                    return (Func<short>)(() => 0);
+                case "UInt64":
+                    return (Func<ulong>)(() => 0U);
+                case "Int64":
+                    return (Func<long>)(() => 0L);
+                case "UInt32":
+                    return (Func<uint>)(() => 0U);
+                case "Double":
+                    return (Func<double>)(() => 0);
+                case "Decimal":
+                    return (Func<decimal>)(() => 0M);
+                case "Int32":
+                    return (Func<int>)(() => 0);
+                case "Single":
+                    return (Func<float>)(() => 0F);
+                default:
+                    return default(T);
+            }
+        }
+
         /// <summary>
         /// Returns an Add method for the type T cast as an object
         /// </summary>
@@ -562,7 +604,8 @@ namespace Numeric
     /// </summary>
     public sealed class NoSuchOperationException<T> : Exception
     {
-        public NoSuchOperationException(string operationName) : 
-            base(string.Format("{0} does not have a {1} operation", typeof(T), operationName)) { }
+        public NoSuchOperationException(string operationName) :
+            base(string.Format("{0} does not have a {1} operation", typeof(T), operationName))
+        { }
     }
 }

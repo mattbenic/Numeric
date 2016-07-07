@@ -28,7 +28,7 @@ using Numeric;
 namespace UnitTests
 {
     [TestClass]
-    public class Int16Tests
+    public class Int16NumericTests
     {
         [TestMethod]
         [ExpectedException(typeof(NoSuchOperationException<short>))]
@@ -314,6 +314,89 @@ namespace UnitTests
             int expected = ((Numeric<short>)input).GetHashCode();
 
             int actual = ((Numeric<short>)input).GetHashCode();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestToStringMethod()
+        {
+            var rand = new Random();
+            short input = (short) rand.Next(short.MinValue, short.MaxValue);
+            string expected = input.ToString();
+
+            string actual = ((Numeric<short>)input).ToString();
+
+            Assert.AreEqual(expected, actual);
+        }
+    }
+
+    [TestClass]
+    public class Int16MathTests
+    {
+        [TestMethod]
+        public void TestAbsMethodPositive()
+        {
+            var rand = new Random();
+            short input = (short) rand.Next(0, short.MaxValue);
+            short expected = input;
+
+            short actual = Math<short>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NoSuchOperationException<short>))]
+        public void TestAbsMethodNegative()
+        {
+            var rand = new Random();
+            short input = (short) rand.Next(short.MinValue, -1);
+            short expected = (short) -input;
+
+            short actual = Math<short>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodLessThan()
+        {
+            var rand = new Random();
+            short min = (short) rand.Next();
+            short max = (short) rand.Next(min, short.MaxValue);
+            short input = (short) rand.Next(short.MinValue, min);
+            short expected = min;
+
+            short actual = Math<short>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodMoreThan()
+        {
+            var rand = new Random();
+            short min = (short) rand.Next();
+            short max = (short) rand.Next(min, short.MaxValue);
+            short input = (short) rand.Next(max, short.MaxValue);
+            short expected = max;
+
+            short actual = Math<short>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodInside()
+        {
+            var rand = new Random();
+            short min = (short) rand.Next();
+            short max = (short) rand.Next(min, short.MaxValue);
+            short input = (short) rand.Next(min, max);
+            short expected = input;
+
+            short actual = Math<short>.Clamp(input, min, max);
 
             Assert.AreEqual(expected, actual);
         }

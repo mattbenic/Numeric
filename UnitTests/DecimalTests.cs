@@ -28,7 +28,7 @@ using Numeric;
 namespace UnitTests
 {
     [TestClass]
-    public class DecimalTests
+    public class DecimalNumericTests
     {
         [TestMethod]
         public void TestAddMethod()
@@ -162,8 +162,8 @@ namespace UnitTests
         public void TestEqualsMethod()
         {
             var rand = new Random();
-            decimal input1 = (decimal)rand.Next();
-            decimal input2 = (decimal)rand.Next();
+            decimal input1 = rand.Next();
+            decimal input2 = rand.Next();
             bool expected = input1 == input2;
 
             bool actual = ((Numeric<decimal>)input1).Equals(input2);
@@ -331,10 +331,92 @@ namespace UnitTests
         public void TestGetHashCodeMethodIsConsistent()
         {
             var rand = new Random();
-            decimal input = (decimal)rand.Next();
+            decimal input = rand.Next();
             int expected = ((Numeric<decimal>)input).GetHashCode();
 
             int actual = ((Numeric<decimal>)input).GetHashCode();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestToStringMethod()
+        {
+            var rand = new Random();
+            decimal input = rand.Next();
+            string expected = input.ToString();
+
+            string actual = ((Numeric<decimal>)input).ToString();
+
+            Assert.AreEqual(expected, actual);
+        }
+    }
+
+    [TestClass]
+    public class DecimalMathTests
+    {
+        [TestMethod]
+        public void TestAbsMethodPositive()
+        {
+            var rand = new Random();
+            decimal input = rand.Next(0, int.MaxValue);
+            decimal expected = input;
+
+            decimal actual = Math<decimal>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestAbsMethodNegative()
+        {
+            var rand = new Random();
+            decimal input = rand.Next(int.MinValue, -1);
+            decimal expected = -input;
+
+            decimal actual = Math<decimal>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodLessThan()
+        {
+            var rand = new Random();
+            decimal min = rand.Next();
+            decimal max = rand.Next((int)min, int.MaxValue);
+            decimal input = rand.Next(int.MinValue, (int)min);
+            decimal expected = min;
+
+            decimal actual = Math<decimal>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodMoreThan()
+        {
+            var rand = new Random();
+            decimal min = rand.Next();
+            decimal max = rand.Next((int)min, int.MaxValue);
+            decimal input = rand.Next((int)max, int.MaxValue);
+            decimal expected = max;
+
+            decimal actual = Math<decimal>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodInside()
+        {
+            var rand = new Random();
+            decimal min = rand.Next();
+            decimal max = rand.Next((int)min, int.MaxValue);
+            decimal input = rand.Next((int)min, (int)max);
+            decimal expected = input;
+
+            decimal actual = Math<decimal>.Clamp(input, min, max);
 
             Assert.AreEqual(expected, actual);
         }

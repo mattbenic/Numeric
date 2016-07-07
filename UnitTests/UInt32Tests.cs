@@ -28,7 +28,7 @@ using Numeric;
 namespace UnitTests
 {
     [TestClass]
-    public class UInt32Tests
+    public class UInt32NumericTests
     {
         [TestMethod]
         public void TestAddMethod()
@@ -331,6 +331,75 @@ namespace UnitTests
             int expected = ((Numeric<uint>)input).GetHashCode();
 
             int actual = ((Numeric<uint>)input).GetHashCode();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestToStringMethod()
+        {
+            var rand = new Random();
+            uint input = (uint) rand.Next((int) uint.MinValue, int.MaxValue);
+            string expected = input.ToString();
+
+            string actual = ((Numeric<uint>)input).ToString();
+
+            Assert.AreEqual(expected, actual);
+        }
+    }
+    [TestClass]
+    public class UInt32MathTests
+    {
+        [TestMethod]
+        public void TestAbsMethodPositive()
+        {
+            var rand = new Random();
+            uint input = (uint)rand.Next(0, int.MaxValue);
+            uint expected = input;
+
+            uint actual = Math<uint>.Abs(input);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodLessThan()
+        {
+            var rand = new Random();
+            uint min = (uint)rand.Next((int) uint.MinValue, int.MaxValue);
+            uint max = (uint)rand.Next((int) min, int.MaxValue);
+            uint input = (uint)rand.Next((int)uint.MinValue, (int) min);
+            uint expected = min;
+
+            uint actual = Math<uint>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodMoreThan()
+        {
+            var rand = new Random();
+            uint min = (uint)rand.Next((int)uint.MinValue, int.MaxValue);
+            uint max = (uint)rand.Next((int)min, int.MaxValue);
+            uint input = (uint)rand.Next((int) max, int.MaxValue);
+            uint expected = max;
+
+            uint actual = Math<uint>.Clamp(input, min, max);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestClampMethodInside()
+        {
+            var rand = new Random();
+            uint min = (uint)rand.Next();
+            uint max = (uint)rand.Next((int) min, int.MaxValue);
+            uint input = (uint)rand.Next((int) min, (int) max);
+            uint expected = input;
+
+            uint actual = Math<uint>.Clamp(input, min, max);
 
             Assert.AreEqual(expected, actual);
         }
