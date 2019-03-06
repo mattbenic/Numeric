@@ -47,7 +47,7 @@ namespace Numeric
         /// </summary>
         /// <param name="t">The value to clamp</param>
         /// <param name="min">The inclusive minimum value to clamp to</param>
-        /// <param name="max">The exclusive maximum value to clamp to</param>
+        /// <param name="max">The inclusive maximum value to clamp to</param>
         /// <returns>A value x, such that min <= x <= max</returns>
         public static T Clamp(T t, T min, T max)
         {
